@@ -1,0 +1,271 @@
+#! /bin/sh
+# 07-11-23
+#
+. regex.src
+
+g_sMyName=`basename $0`
+
+#------------------------------------------------------------------------------
+#
+function F_Usage
+{
+    echo "Usage: $g_sMyName [new | db]"
+    
+    exit 1
+}
+
+g_bNew=0
+g_bDb=0
+
+#------------------------------------------------------------------------------
+#
+function F_Options
+{
+    while [ $# -gt 0 ]; do
+        if [ "$1" = "new" ]; then
+            g_bNew=1
+        elif [ "$1" = "db" ]; then
+            g_bDb=1
+        elif [ "$1" = "-force" ]; then
+            force=1
+        else
+            F_Usage
+        fi
+
+        shift
+    done
+}
+
+#HERE=`pwd`
+HERE="."
+
+CSCOPE_FILES="${HERE}/cscope.files"
+CSCOPE_FILES_TMP="${CSCOPE_FILES}.tmp"
+
+#------------------------------------------------------------------------------
+# 파일을 추가
+#
+function F_FileAdd
+{   
+    local sFile="$1"
+    
+    echo "${sFile}" >> ${CSCOPE_FILES}
+}
+
+#------------------------------------------------------------------------------
+#
+#
+function F_FilesAdd
+{   
+    local sDir="$1"
+    local sFiles="$2"
+
+    if [ ! -d $sDir ]; then
+    	return
+    fi
+    
+    find "${sDir}"                                      \
+        -path "*CVS*"                       -prune -o   \
+        -path "*.swp"                       -prune -o   \
+        -path "${HERE}/Documentation"       -prune -o   \
+        -path "${HERE}/scripts"             -prune -o   \
+                                                        \
+        -name "${sFiles}"                               \
+        -print >> ${CSCOPE_FILES}
+}
+ 
+#------------------------------------------------------------------------------
+# 디렉토리에서 파일을 찾아 추가
+#
+function F_ZebosFilesAdd
+{   
+#    local sDir="$1"
+    local sFiles="$1"
+
+    find -L ${HERE}                                            \
+        -path "*CVS*"                           -prune -o   \
+        -path "*custom*"                        -prune -o   \
+        -path "*.swp"                           -prune -o   \
+        -path "*\.org*"                         -prune -o   \
+        -path "*_730*"                          -prune -o   \
+        -path "*_741*"                          -prune -o   \
+        -path "*build"                          -prune -o   \
+        -path "*_bkup*"                         -prune -o   \
+        -path "*-bkup*"                         -prune -o   \
+        -path "*\.bkup"                         -prune -o   \
+        -path "${HERE}/stpd/*"                  -prune -o   \
+        -path "${HERE}/rstpd/*"                 -prune -o   \
+        -path "${HERE}/vtysh/*"                 -prune -o   \
+        -path "${HERE}/hal/l2swfwdr/*"          -prune -o   \
+        -path "${HERE}/hal/swfwdr/*"            -prune -o   \
+                                                            \
+        -path "${HERE}/pal/dummy/*"             -prune -o   \
+        -path "${HERE}/pal/freebsd/*"           -prune -o   \
+        -path "${HERE}/pal/lynxos/*"            -prune -o   \
+        -path "${HERE}/pal/netbsd/*"            -prune -o   \
+        -path "${HERE}/pal/openbsd/*"           -prune -o   \
+        -path "${HERE}/pal/ose/*"               -prune -o   \
+        -path "${HERE}/pal/ose_ipnet/*"         -prune -o   \
+        -path "${HERE}/pal/solaris/*"           -prune -o   \
+        -path "${HERE}/pal/windows/*"           -prune -o   \
+                                                            \
+        -path "${HERE}/platform/dummy/*"        -prune -o   \
+        -path "${HERE}/platform/freebsd/*"      -prune -o   \
+        -path "${HERE}/platform/lynxos/*"       -prune -o   \
+        -path "${HERE}/platform/netbsd/*"       -prune -o   \
+        -path "${HERE}/platform/openbsd/*"      -prune -o   \
+        -path "${HERE}/platform/ose/*"          -prune -o   \
+        -path "${HERE}/platform/ose_ipnet/*"    -prune -o   \
+        -path "${HERE}/platform/solaris/*"      -prune -o   \
+        -path "${HERE}/platform/windows/*"      -prune -o   \
+        -path "${HERE}/platform/linux/obj/*"    -prune -o   \
+                                                            \
+        \(  -name '*.[chsS]'    -o                          \
+            -name '*.def'       -o                          \
+            -name '*.proto'     -o                          \
+            -name '*.proto'     -o                          \
+            -name 'Rules.*'     -o                          \
+            -name 'Makefile'                                \
+        \)                                                  \
+        -print >> ${CSCOPE_FILES}
+}
+
+zebos_add()
+{
+    find ${HERE}					\
+	     						\
+	    \( -iname "*.c" -o 				\
+	       -iname "*.h" -o				\
+	       -iname "*.def" -o			\
+	       -iname "*.proto" -o			\
+	       -iname "Rules.*" -o			\
+	       -iname "Makefile"			\
+	    \) 						\
+	    -and \( -not -type l \) 			\
+	     						\
+            ! \( -path "*custom*" -o			\
+	    	 -path "*\.org*" -o			\
+	    	 -path "*/stpd/*" -o			\
+	    	 -path "*/rstpd/*" -o			\
+	    	 -path "*/vtysh/*" -o			\
+	     						\
+	    	 -path "*/pal/dummy/*" -o		\
+	    	 -path "*/pal/freebsd/*" -o		\
+	    	 -path "*/pal/lynxos/*" -o		\
+	    	 -path "*/pal/netbsd/*" -o		\
+	    	 -path "*/pal/openbsd/*" -o		\
+	    	 -path "*/pal/ose/*" -o			\
+	    	 -path "*/pal/ose_ipnet/*" -o		\
+	    	 -path "*/pal/solaris/*" -o		\
+	    	 -path "*/pal/windows/*" -o		\
+	     						\
+	    	 -path "*/pal/platform/dummy/*" -o	\
+	    	 -path "*/pal/platform/freebsd/*" -o	\
+	    	 -path "*/pal/platform/lynxos/*" -o	\
+	    	 -path "*/pal/platform/netbsd/*" -o	\
+	    	 -path "*/pal/platform/openbsd/*" -o	\
+	    	 -path "*/pal/platform/ose/*" -o	\
+	    	 -path "*/pal/platform/ose_ipnet/*" -o	\
+	    	 -path "*/pal/platform/solaris/*" -o	\
+	    	 -path "*/pal/platform/windows/*" -o	\
+	    	 -path "*/pal/platform/linx/obj/*" -o	\
+                                                        \
+                 -path "*/platform/dummy/*"          -o \
+                 -path "*/platform/freebsd/*"        -o \
+                 -path "*/platform/lynxos/*"         -o \
+                 -path "*/platform/netbsd/*"         -o \
+                 -path "*/platform/openbsd/*"        -o \
+                 -path "*/platform/ose/*"            -o \
+                 -path "*/platform/ose_ipnet/*"      -o \
+                 -path "*/platform/solaris/*"        -o \
+                 -path "*/platform/windows/*"        -o \
+                 -path "*/platform/linux/obj/*"      -o \
+	     						\
+	    	 -path "*\.swp*"			\
+	      \)    					\
+	     						\
+	-print >> ${CSCOPE_FILES}
+
+    find ${HERE}					\
+	\( 						\
+	  \( -iname "*.c" -o 				\
+	     -iname "*.h"				\
+	  \)						\
+	  -and -type l					\
+	\) 						\
+	-printf "%l\n"  >> ${CSCOPE_FILES}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Files
+{
+    if [ -f "${CSCOPE_FILES}" -a $g_bNew -ne 1 ]; then
+       return
+    fi
+
+    rm -f ${HERE}/cscope.*
+    rm -f ${HERE}/tags
+
+    echo "" > ${CSCOPE_FILES}
+
+#    F_ZebosFilesAdd
+    zebos_add
+
+    F_FileAdd "lib/cli.pl"
+    F_FileAdd "config.h.in"
+    F_FileAdd "configure.ac"
+ 
+    # remove unwanted files
+    awk '$0 !~/mpls/ {printf("%s\n", $0)}' ${CSCOPE_FILES} > ${CSCOPE_FILES_TMP}
+    mv ${CSCOPE_FILES_TMP} ${CSCOPE_FILES}
+
+    rmlines.sh "hsl\/broadcom\/linux\/L3\/ipnet2\/hsl_stack.c" ${CSCOPE_FILES}
+
+    #
+    F_FilesAdd ../common/include "*.[chsS]"
+    F_FilesAdd ../libcommon "*.[chsS]"
+
+    rmlines.sh "imi\/util\/imi_server.c"         ${CSCOPE_FILES}
+}
+
+#CSCOPE_OPTIONS="-b -I$INCDIR"
+
+#------------------------------------------------------------------------------
+#
+function F_DbBuild
+{
+    if [ -f "${HERE}/cscope.out" -a $g_bNew -ne 1 ]; then
+        return
+    fi
+
+    if [ -z "$INCDIR" ]; then
+        CSCOPE_OPTIONS="-b"
+    else
+        CSCOPE_OPTIONS="-b -I$INCDIR"
+    fi
+
+    #ctags `cat ${HERE}/cscope.files`
+    cscope ${CSCOPE_OPTIONS}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Main
+{
+    F_Options $*
+    
+    F_Files $*
+
+    ctags -L ${CSCOPE_FILES}
+
+    if [ $g_bDb -eq 1 ]; then
+        F_DbBuild
+        exit 0
+    fi
+
+    cscope 
+}
+
+F_Main $*
+exit 0

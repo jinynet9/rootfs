@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#:docstring strncat:
+# 사용법: strncat s1 s2 $n
+#
+# strcat 과 비슷하지만 s2 에서 최대 n 문자만큼만 덧붙입니다. s2 가 n 보다
+# 짧다면 그냥 s2 만 복사합니다. Echoes result on stdout.
+#
+# 예제:
+#    a=foo
+#    b=barbaz
+#    strncat a b 3
+#    echo $a
+#    => foobar
+#
+#:end docstring:
+
+###;;;autoload
+function strncat ()
+{
+    local s1="$1"
+    local s2="$2"
+    local -i n="$3"
+    local s1_val s2_val
+
+    s1_val=${!s1}                       # ==> 변수 간접 참조 확장
+    s2_val=${!s2}
+
+    if [ ${#s2_val} -gt ${n} ]; then
+       s2_val=${s2_val:0:$n}            # ==> 문자열조각(substring) 추출
+    fi
+
+    eval "$s1"=\'"${s1_val}${s2_val}"\'
+    # ==> 두 변수중 하나라도 작은 따옴표가 들어 있을 경우에는,
+    # ==> eval $1='${s1_val}${s2_val}' 이라고 하면 됩니다.
+}

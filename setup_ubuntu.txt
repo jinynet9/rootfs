@@ -1,0 +1,195 @@
+
+# repository
+sudo gvim /etc/apt/sources.list
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+
+# Synaptic Package Manager & GDebi Package Installer
+sudo apt-get -y install synaptic
+sudo apt-get -y install gdebi
+
+# sudo (debian)
+su
+adduser jinynet9 sudo
+reboot
+
+# gksudo
+sudo apt-get -y install gksu
+
+#
+# network
+#
+# dns
+/etc/resolv.conf
+
+# ifconfig
+sudo apt-get -y install net-tools
+
+# ntp
+sudo apt-get -y install ntp
+
+# picocom
+sudo apt-get -y install picocom
+
+# gvim
+sudo apt-get -y install vim-gnome
+
+# terminator
+sudo apt-get -y install terminator
+
+# rdesktop
+sudo apt-get -y install rdesktop
+
+# remmina (remote desktop sharing tool)
+sudo apt-get -y install remmina
+
+# filezilla
+sudo apt-get -y install filezilla
+
+# libre office
+sudo apt-get -y install libreoffice
+
+# snmp
+sudo apt-get -y install snmp
+sudo apt-get -y install snmptrapd
+
+# wireshark
+sudo apt-get -y install wireshark
+
+# gcc & make
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get -y install build-essential
+
+# vmplayer (ubutu)
+gksudo bash tmp/VMware-Player-6.0.5-2443746.x86_64.bundle
+
+# vmplayer (debian)
+chmod +x data/warehouse/VMware-Player-7.1.0-2496824.x86_64.bundle
+sudo data/warehouse/VMware-Player-7.1.0-2496824.x86_64.bundle
+
+# gparted
+sudo apt-get -y install gparted
+
+# freemind
+sudo apt-get -y install freemind
+
+# unity tweak tool
+https://apps.ubuntu.com/cat/applications/unity-tweak-tool/
+
+# google-chrome
+
+# Indicator-Multiload
+sudo add-apt-repository ppa:indicator-multiload/stable-daily
+sudo apt-get update
+sudo apt-get -y install indicator-multiload
+
+# guake
+sudo apt-get -y install guake
+
+# rsync (debian)
+sudo apt-get -y install rsync
+
+# TeamViewer
+
+# wallch - wallpaper changer
+sudo apt-get -y install wallch
+
+# wine
+
+sudo add-apt-repository ppa:ubuntu-wine/ppa
+sudo apt-get update
+sudo apt-get install -y wine1.7 winetricks
+
+# dolphin
+sudo apt-get -y install dolphin
+
+# midnight commander
+sudo apt-get -y install mc
+
+# packeth
+sudo apt-get -y install packeth
+
+# everpad
+sudo add-apt-repository ppa:nvbn-rm/ppa
+sudo apt-get update
+sudo apt-get install everpad
+
+# Compiz Config Settings Manager
+sudo apt-get -y install compizconfig-settings-manager
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// sudo: add-apt-repository: command not found
+//
+sudo apt-get install software-properties-common python-software-properties
+
+# variety (wallpaper changer)
+sudo add-apt-repository ppa:peterlevi/ppa
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Ubuntu Software Center
+//
+
+# ClassMenu Indicator
+
+# Adobe Flash plugin
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// bash
+//
+
+# .profile
+# .bashrc
+
+
+
+
+//******************************************************************************
+//
+// centos
+// dnf, yum
+//
+
+#
+dnf upgrade
+
+# sudo
+chmod u+w /etc/sudoers
+
+# network
+ls /etc/sysconfig/network-scripts/
+
+systemctl restart NetworkManager
+
+or
+
+ifdown ens3
+ifup ens3
+
+ip address
+
+ip route
+
+# gvim
+dnf -y install gvim
+
+#
+# ssh ; change port to 3022
+#
+gvim /etc/ssh/sshd_config 
+
+firewall-cmd --permanent --zone=public --add-port=3022/tcp
+firewall-cmd --reload
+
+#dnf -y install policycoreutils-python-utils
+semanage port -a -t ssh_port_t -p tcp 3022
+
+systemctl restart sshd
+
+netstat -nlpt | grep 3022
+

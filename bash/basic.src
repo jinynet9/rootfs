@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# 06-04-03
+#
+
+
+
+    # is number?
+#    [ -z ${rv//[0-9]/} ] && {
+#    }
+
+# insenstive string
+#{
+#    str1="MaTcH"
+#    str2=$(echo $str1 | tr '[a-z]' '[A-Z]')
+#    echo $str2
+#}
+
+function F_ChkExit()
+{
+    if [ 0 -eq $? ]; then return; fi
+
+    echo ""; echo "";
+
+    if [ ! -z "$1" ]; then
+        echo "$1"
+    else
+        echo "----- FAIL -----";
+    fi
+
+    echo ""
+
+    exit 1
+}
+
+function chkexit()
+{
+    F_ChkExit $*
+}
+
+ 

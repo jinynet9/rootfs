@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#:docstring strcspn:
+# 사용법: strcspn $s1 $s2
+#
+# Strcspn 은 s2 전체가 포함되지 않는 s1 의 최대 초기 세그먼트 길이를 리턴합니다.
+#:end docstring:
+
+###;;;autoload
+function strcspn ()
+{
+    # IFS 를 언셋해 놓으면 공백문자도 일반 문자처럼 처리할 수 있습니다.
+    local IFS=
+    local result="${1%%[${2}]*}"
+
+    echo ${#result}
+}

@@ -1,0 +1,4 @@
+
+. regex.src
+
+find . -name "$1" -print

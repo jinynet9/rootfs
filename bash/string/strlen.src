@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#:docstring strlen:
+# 사용법: strlen s
+#
+# Strlen 은 s 의 길이를 리턴합니다.
+#:end docstring:
+
+###;;;autoload
+function strlen ()
+{
+    eval echo "\${#${1}}"
+    # ==> 인자로 넘어온 변수값의 길이를 리턴
+}

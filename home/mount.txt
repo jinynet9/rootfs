@@ -1,0 +1,32 @@
+
+# ceres
+sudo mount -t cifs //172.17.0.4/jinynet9 ~/mnt/ceres -o uid=503,gid=503,user='jinynet9',password=''
+
+# nox
+sudo mount -t cifs //172.17.0.12/jinynet9 ~/mnt/nox -o uid=503,gid=503,user='jinynet9',password=''
+
+# nas
+sudo mount -t cifs //172.17.0.21/home ~/mnt/nas -o user='jinynet9',password=''
+
+#
+# in openwrt
+#
+# nike
+mount -t cifs //172.17.0.9/jinynet9 /mnt/nike -o username=jinynet9,password=wjsurshf,sec=ntlmssp,vers=1.0
+# ceres
+mount -t cifs //172.17.0.4/jinynet9 /mnt/ceres -o username=jinynet9,password=wjsurshf,sec=ntlmssp,vers=1.0
+
+# venus::2824xg
+sudo mount -t nfs 172.17.0.7:/home/jinynet9/control-project/DSW2824XG-jiny mnt/DSW2824XG-jiny
+
+### dsw3324g - ceres
+# mount -t cifs //172.17.0.4/jinynet9 /mnt/ceres -o username=jinynet9,password=wjsurshf,sec=ntlmssp,vers=1.0
+# ls
+ls: ./ceres: Value too large for defined data type
+# mount -t cifs //172.17.0.4/jinynet9 /mnt/ceres -o username=jinynet9,password=wjsurshf,sec=ntlmssp,vers=1.0,nounix,noserverino
+
+#
+# jinux
+#
+sudo mount -t cifs //172.17.1.21/jinynet9 ~/mnt/jinux -o user='jinynet9',password=''
+

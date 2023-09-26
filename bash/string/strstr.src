@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#:docstring strstr:
+# 사용법: strstr s1 s2
+#
+# Strstr 은 s1 에서 s2 가 처음 발견되는 문자열조각(substring)을 에코해 주고,
+# s1 에서 s2 가 발견되지 않는다면 그냥 무시합니다.
+# 만약에 s2 가 길이가 0 인 문자열을 가르킨다면 s1 을 리턴합니다.
+#:end docstring:
+
+###;;;autoload
+function strstr ()
+{
+    # s2 가 가르키는 문자열의 길이가 0 이라면 s1 을 에코
+    [ ${#2} -eq 0 ] && { echo "$1" ; return 0; }
+
+    # s1 에서 s2 가 발견되지 않으면 그냥 리턴
+    case "$1" in
+    *$2*) ;;
+    *) return 1;;
+    esac
+
+    # 일치하는 부분부터 끝까지를 떼어 내기 위해 패턴 매칭 사용
+    first=${1/$2*/}
+
+    # 그 다음에는 일치하지 첫번째 부분을 떼어냄
+    echo "${1##$first}"
+}

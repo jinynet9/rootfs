@@ -1,0 +1,197 @@
+#
+# 07-11-23
+#
+. regex.src
+
+g_sMyName=`basename $0`
+
+#------------------------------------------------------------------------------
+#
+function F_Usage
+{
+    echo "Usage: $g_sMyName [-build] [-nubi] [-sal]"
+    
+    exit 1
+}
+
+g_bBuild=0
+
+SZ_NUBI="nubi"
+SZ_SAL="sal"
+g_sTarget=""
+
+#------------------------------------------------------------------------------
+#
+function F_Options
+{
+    while [ $# -gt 0 ]; do
+        if [ "$1" = "-build" ]; then
+            g_bBuild=1
+        elif [ "$1" = "-nubi" ]; then
+            g_sTarget=$SZ_NUBI
+        elif [ "$1" = "-sal" ]; then
+            g_sTarget=$SZ_SAL
+        elif [ "$1" = "-dbpath" ]; then
+            shift
+            dbpath=$1
+        elif [ "$1" = "-force" ]; then
+            force=1
+        else
+            F_Usage
+            exit 1
+        fi
+
+        shift
+    done
+}
+
+HERE=`pwd`
+
+#------------------------------------------------------------------------------
+#
+function F_FilesNubi
+{
+    find ${HERE}                                        \
+        -path "${HERE}/CVS/*" -prune -o                 \
+        -path "${HERE}/*tmp/*" -prune -o                \
+        -path "${HERE}/Work/*" -prune -o                \
+        -path "${HERE}/*NotUsed/*" -prune -o            \
+        -path "${HERE}/OsIfc_Pal/*" -prune -o           \
+        -path "${HERE}/Test/*" -prune -o                \
+                                                        \
+        ! -name "test*.*"                               \
+        -name "*.[chsS]"                                \
+        -print > ${HERE}/cscope.files
+}
+
+#------------------------------------------------------------------------------
+#
+function F_FilesSal
+{
+    if [ -f "${HERE}/cscope.files" -a $g_bBuild -ne 1 ]; then
+       return
+    fi
+
+    find  ${HERE}                                                                   \
+        -path "${HERE}/CVS/*" -prune -o                                             \
+    	-path "${HERE}/tmp*" -prune -o                                              \
+	    -path "${HERE}/Documentation*" -prune -o                                    \
+    	-path "${HERE}/scripts*" -prune -o                                          \
+                                                                                    \
+        -name "*.[chxsS]"                                                           \
+        -print > ${HERE}/cscope.files
+
+
+#    	-path "${HERE}/arch/*" ! -path "$KERNEL/arch/mips" -prune -o               \
+#	    -path "${HERE}/include/asm-*" ! -path "$KERNEL/include/asm-mips"  ! -path "$KERNEL/include/asm-generic" -prune -o \
+#	    -path "${HERE}/drivers*" -prune -o                                          \
+}
+
+#------------------------------------------------------------------------------
+#
+function F_FilesNormal
+{
+    find ${HERE}                                        \
+        -path "${HERE}/CVS/*" -prune -o                 \
+        -path "${HERE}/work.linux-2.2/*" -prune -o                 \
+        -name "*.[chsS]"                                \
+        -print > ${HERE}/cscope.files
+
+#	-or -name "*.def"                               \
+#	-or -name "*.proto"                             \
+#	-or -name "Makefile"                            \
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Files
+{
+    if [ -f "${HERE}/cscope.files" -a $g_bBuild -ne 1 ]; then
+       return
+    fi
+
+    # target 
+    case $g_sTarget in
+        nubi )    F_FilesNubi ;;
+
+        sal  )    F_FilesSal ;;
+
+        * )       F_FilesNormal ;;
+echo "...here..."
+exit 0
+    esac
+}
+
+CSCOPE_OPTIONS=""
+
+#------------------------------------------------------------------------------
+#
+function F_DbBuild
+{
+    if [ -f "${HERE}/cscope.out" -a $g_bBuild -ne 1 ]; then
+        return
+    fi
+
+    # target 
+    case $g_sTarget in
+        sal )    CSCOPE_OPTIONS="-b -k" ;;
+
+        * )      CSCOPE_OPTIONS="-b" ;;
+    esac
+
+    cscope ${CSCOPE_OPTIONS}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Main
+{
+    F_Options $*
+    
+    F_Files $*
+
+    F_DbBuild $*
+
+    cscope
+
+#    cscope -d
+}
+
+F_Main $*
+exit 0
+
+
+
+
+
+
+
+EXCLUDE=" ! -name \"*.o\" "
+#EXCLUDE=" ! -name \"*.o\" ! -name \"*.a\" ! -name \"*.so.*\" ! "
+#EXCLUDE="${EXCLUDE} --exclude=*.IAB --exclude=*.IAD --exclude=*.IMB --exclude=*.IMD --exclude=*.PFI --exclude=*.PO --exclude=*.PR --exclude=*.PRI --exclude=*.PS --exclude=*.SearchResults --exclude=*.WK3"
+
+OPTIONS="${EXCLUDE} -print"
+
+#find ${HERE}            \
+#    ! -name "*.o"       \
+#    ! -name "*.a"       \
+#    ! -name "*.so.*"    \
+#    ! -name "*.gif"     \
+#    ! -name "*.IAB"     \
+#    ! -name "*.IAD"     \
+#    ! -name "*.IMB"     \
+#    ! -name "*.IMD"     \
+#    ! -name "*.PFI"     \
+#    ! -name "*.PO"      \
+#    ! -name "*.PR"      \
+#    ! -name "*.PRI"     \
+#    ! -name "*.PS"      \
+#    ! -name "*.WK3"     \
+#    ! -name "*.SearchResults"   \
+#    ! -name "*.pdf"     \
+#    ! -name "tags"      \
+#    -print > cscope.files
+#
+##    -path "${HERE}/cust" -prune -o \
+
+

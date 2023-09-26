@@ -1,0 +1,117 @@
+#! /bin/sh
+# 07-11-23
+#
+. regex.src
+
+g_sMyName=`basename $0`
+
+#------------------------------------------------------------------------------
+#
+function F_Usage
+{
+    echo "Usage: $g_sMyName [new]"
+    
+    exit 1
+}
+
+g_bNew=0
+
+#------------------------------------------------------------------------------
+#
+function F_Options
+{
+    while [ $# -gt 0 ]; do
+        if [ "$1" = "new" ]; then
+            g_bNew=1
+        elif [ "$1" = "-force" ]; then
+            force=1
+        else
+            F_Usage
+        fi
+
+        shift
+    done
+}
+
+#HERE=`pwd`
+HERE="."
+
+CSCOPE_FILES=${HERE}/cscope.files
+ 
+#------------------------------------------------------------------------------
+# 파일을 추가
+#
+function F_FileAdd
+{   
+    local sFile="$1"
+    
+    echo "${sFile}" >> ${CSCOPE_FILES}
+}
+ 
+#------------------------------------------------------------------------------
+# 디렉토리에서 파일을 찾아 추가
+#
+function F_FilesAdd
+{   
+    local sFiles="$1"
+    
+    find "${HERE}"                                      \
+        -path "*CVS*"                       -prune -o   \
+        -path "*tmp"                        -prune -o   \
+        -path "${HERE}/*NotUsed"            -prune -o   \
+        -path "${HERE}/Work"                -prune -o   \
+        -path "${HERE}/OsIfc_Pal"           -prune -o   \
+        -path "${HERE}/Test"                -prune -o   \
+                                                        \
+        -name "${sFiles}"                               \
+        -print >> ${CSCOPE_FILES}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Files
+{
+    if [ -f "${HERE}/cscope.files" -a $g_bNew -ne 1 ]; then
+       return
+    fi
+
+    rm -f ${HERE}/cscope.*
+    rm -f ${HERE}/tags
+
+    # make empty file
+    echo "" > ${CSCOPE_FILES}
+
+    F_FilesAdd "*.[chsS]"
+
+    echo "${HERE}/Test/test.c" >> ${CSCOPE_FILES}
+}
+
+CSCOPE_OPTIONS="-b"
+
+#------------------------------------------------------------------------------
+#
+function F_DbBuild
+{
+    if [ -f "${HERE}/cscope.out" -a $g_bNew -ne 1 ]; then
+        return
+    fi
+
+    #ctags `cat ${HERE}/cscope.files`
+    cscope ${CSCOPE_OPTIONS}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Main
+{
+    F_Options $*
+    
+    F_Files $*
+
+    F_DbBuild $*
+
+    cscope 
+}
+
+F_Main $*
+exit 0

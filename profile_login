@@ -1,0 +1,30 @@
+#
+# excuted by ~/.profile (for login shells)
+#
+
+#
+# mount
+#
+curlftpfs jinynet9:wjsurshf@172.17.0.6 mnt/apollo/
+curlftpfs jinynet9:wjsurshf@172.17.0.7 mnt/venus/
+curlftpfs jinynet9:wjsurshf@172.17.0.12 mnt/nox/
+curlftpfs jinynet9:wjsurshf@172.17.0.21 mnt/nas1_jinynet9/ -o codepage=euc-kr
+
+#
+# application
+#
+
+# indicator
+indicator-multiload &
+
+# google chrome
+google-chrome &
+
+# rdesktop
+rootfs/bin/rdesktop_notebook.sh &
+rootfs/bin/rdesktop_nanum &
+
+# terminal
+gnome-terminal &
+gnome-terminal &
+gnome-terminal &

@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# 06-04-03
+#
+
+. basic.src
+
+pushd .; cd string ; . string.src; popd
+

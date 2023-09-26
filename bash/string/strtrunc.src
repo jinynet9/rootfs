@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#:docstring strtrunc:
+# 사용법: strtrunc $n $s1 {$s2} {$...}
+# strncmp 처럼 여러 함수에서 쓰이는데, 비교를 위해서 인자를 잘라냅니다.
+# 각각의 s1, s2 ... 에서 처음 n 개의 문자를 표준출력으로 에코해 줍니다.
+#:end docstring:
+
+###;;;autoload
+function strtrunc ()
+{
+    n=$1 ; shift
+    for z; do
+        echo "${z:0:$n}"
+    done
+}
