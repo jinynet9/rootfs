@@ -1,0 +1,12 @@
+#! /bin/sh
+#
+# for bash library
+# 06-04-03
+#
+
+echo "result 1"
+echo "result 2"
+echo "result 3"
+
+exit 0
+

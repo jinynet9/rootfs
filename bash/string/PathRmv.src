@@ -1,0 +1,26 @@
+#!/bin/bash
+
+###############################################################################
+# path가 들어 있는 파일 이름에서 path가 빠진 파일 이름을 얻는다
+# 사용: sFileName=`F_FileNameGet /tmp/file.txt`
+#       sFileName="file.txt"
+#
+Str_F_PathRmv()
+{
+    local sPath=$1
+    local nLen=1
+    local sMatch=""
+    
+    while [ $nLen -ne 0 ]
+    do
+        nLen=`expr index $sPath /`                  # '/' 인덱스를 찾아
+
+        if [ $nLen -ne 0 ]; then
+            sMatch=`expr substr $sPath 1 $nLen`     # substring을 얻고
+            sPath=${sPath#$sMatch}                  # path에서 삭제
+        fi
+    done
+
+    echo $sPath
+}
+

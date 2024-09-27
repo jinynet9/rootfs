@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]
+then
+        echo ""
+        echo "Usage: `basename $0` filename" >&2
+        exit $NOARGS
+fi
+
+if [ -f $1 ] ; then
+        filename=$1
+        if [ ${filename##*.} != "bz2" ]
+        then
+                tar xvzf $filename
+        else
+                tar xvjf $filename
+        fi
+else
+        echo "WTF!? ;-("
+fi
+

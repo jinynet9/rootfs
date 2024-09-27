@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ $# -eq 0 ]; then
+    echo ""
+    echo "Usage: `basename $0` [-jz] filename" >&2
+    exit $NOARGS
+fi
+
+g_bBz2=0
+
+if [ "$1" = "-z" ]; then
+    g_bBz2=0
+    shift
+fi
+
+if [ "$1" = "-j" ]; then
+    g_bBz2=1
+    shift
+fi
+
+g_sFilename=$1
+# "dirname/" 처럼 맨 끝의 '/'는 제거
+g_sFilename=`echo ${g_sFilename%\/}`
+
+if [ $g_bBz2 -eq 1 ]; then
+    tar cvjf ${g_sFilename}.bz2 $*
+else
+    tar cvzf ${g_sFilename}.tgz $*
+fi
+

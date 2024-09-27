@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#:docstring strncmp:
+# 사용법: strncmp $s1 $s2 $n
+#
+# strcmp 와 비슷하나 최대 n 문자만큼만 비교합니다( n 이 0 이하면 0 을 리턴).
+#:end docstring:
+
+###;;;autoload
+function strncmp ()
+{
+    if [ -z "${3}" -o "${3}" -le "0" ]; then
+       return 0
+    fi
+
+    if [ ${3} -ge ${#1} -a ${3} -ge ${#2} ]; then
+       strcmp "$1" "$2"
+       return $?
+    else
+       s1=${1:0:$3}
+       s2=${2:0:$3}
+       strcmp $s1 $s2
+       return $?
+    fi
+}

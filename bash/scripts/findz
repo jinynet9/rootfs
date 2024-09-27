@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+#
+
+. regex.src
+
+find . -name "$1" -print
+
+#///////////////////////////////////////////////////////////////////////////////
+#
+# execpt './foo/bar' directory
+# $ find . ! \( -type d -path './foo/bar' -prune \) -name "*.txt"
+#
+# execpt './foo/bar', './fee/ber' directory
+# $ find . ! \( \( -type d -path './foo/bar' -o -path './fee/ber' \) -prune \) -name "*.txt"
+#
+# execpt directory starting with './foo'
+# $ find . ! \( -type d -path './foo*' -prune \) -name "*.txt"
+#
+# do command
+# $ find . -name "*.txt" -exec ls -l {} \;
+#
+# grep command
+# $ find . -name "*.txt" | xargs grep "bash"
+#
+
+#///////////////////////////////////////////////////////////////////////////////
+#
+# find option
+# 
+# -name NAME	
+# -iname NAME		ignore case
+# -type f		file
+# -type d		directory
+# -type l		symbolic link
+# -mtime +5d		last modified 5day ago
+# -size +5M 	
+# -perm 644
+# -exec CMD {} \;
+# -exec rm -f {} \;
+# | xargs CMD
+# | xargs grep -n "PATTERN"
+#

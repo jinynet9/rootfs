@@ -1,0 +1,129 @@
+#! /bin/sh
+# 07-11-23
+#
+# when importing cscope.out, you can supply the prefix, i.e.
+# :cscope add /path/to/cscope.out /path/to
+#
+
+. regex.src
+
+g_sMyName=`basename $0`
+
+#------------------------------------------------------------------------------
+#
+F_Usage ()
+{
+    echo "Usage: $g_sMyName [new | db]"
+    
+    exit 1
+}
+
+g_bNew=0
+g_bDb=0
+
+#------------------------------------------------------------------------------
+#
+F_Options ()
+{
+    while [ $# -gt 0 ]; do
+        if [ "$1" = "new" ]; then
+            g_bNew=1
+        elif [ "$1" = "db" ]; then
+            g_bDb=1
+        elif [ "$1" = "-force" ]; then
+            force=1
+        else
+            F_Usage
+        fi
+
+        shift
+    done
+}
+
+#HERE=`pwd`
+HERE="."
+
+RHERE="~/${PWD#"$HOME"/}"
+
+CSCOPE_FILES="${HERE}/cscope.files"
+CSCOPE_FILES_TMP="${CSCOPE_FILES}.tmp"
+
+#------------------------------------------------------------------------------
+# 디렉토리에서 파일을 찾아 추가
+#
+F_FilesAdd ()
+{
+    local sDir="$1"
+    local sFiles="$2"
+ 
+    # Write only the files which are NOT symlinks
+    find ${sDir} \( ! \( \( -type d -path "${HERE}/CVS" -type d -o -path "${HERE}/tmp" \) -prune \) -name "${sFiles}" -and \( -not -type l \) \) -print >> ${CSCOPE_FILES}
+
+    # Add the target of the symlink for all files matching the right extension, and are symlinks
+    find ${sDir} \( ! \( \( -type d -path "${HERE}/CVS" -type d -o -path "${HERE}/tmp" \) -prune \) -name "${sFiles}" -and -type l \) -printf "%l\n" >> ${CSCOPE_FILES}
+}
+
+rmlines ()
+{
+    local pattern=$1
+    local mark="-+-+-"
+
+    sed "s%${1}/%$mark%" $CSCOPE_FILES > $CSCOPE_FILES_TMP
+    sed "/$mark/d" $CSCOPE_FILES_TMP > $CSCOPE_FILES
+}
+
+#------------------------------------------------------------------------------
+#
+F_Files ()
+{
+    if [ -f "${CSCOPE_FILES}" -a $g_bNew -ne 1 ]; then
+       return
+    fi
+
+    rm -f ${HERE}/cscope.*
+    rm -f ${HERE}/tags
+ 
+    # make empty file
+    echo "" > ${CSCOPE_FILES}
+
+    F_FilesAdd "${HERE}"    "*.[chsS]"
+    F_FilesAdd "${HERE}"    "*.cpp"
+}
+
+CSCOPE_OPTIONS="-b"
+
+#------------------------------------------------------------------------------
+#
+F_DbBuild ()
+{
+    if [ -f "${HERE}/cscope.out" -a $g_bNew -ne 1 ]; then
+        return
+    fi
+
+    if [ ! -z $INCDIR ]; then
+    	CSCOPE_OPTIONS="$CSCOPE_OPTIONS -I$INCDIR"
+    fi
+
+    cscope ${CSCOPE_OPTIONS}
+}
+
+#------------------------------------------------------------------------------
+#
+F_Main ()
+{
+    F_Options $*
+    
+    F_Files $*
+
+    ctags -L ${CSCOPE_FILES}
+
+    if [ $g_bDb -eq 1 ]; then
+        F_DbBuild
+        exit 0
+    fi
+
+    cscope
+}
+
+F_Main $*
+exit 0

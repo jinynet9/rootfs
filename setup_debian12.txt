@@ -1,0 +1,351 @@
+
+install with english
+
+#
+# if install with hangle
+# change locale to english
+#
+
+# rename Hangle to English in home directory (hcnam.tistory.com/29)
+export LANG=C
+xdg-user-dirs-gtk-update
+
+
+# sudo
+su
+adduser jinynet9 sudo
+reboot
+
+  or
+
+visudo -f /etc/sudoers
+
+  # User privilege specification
+  root	ALL=(ALL:ALL) ALL
+  jinynet9 ALL=(ALL:ALL) ALL
+
+
+# repository
+sudo gvim /etc/apt/sources.list
+
+  add example for Debian 12/Bookworm (stable), refer to wiki.debian.org/SourcesList
+
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+
+
+# gnome-tweaks
+- windows titlebar - minimize
+- windows - focus on hover
+
+# /etc/fstab
+# show UUID
+sudo blkid
+
+
+# guake
+sudo apt-get -y install guake
+
+# guake 자동 실행
+cp /usr/share/guake/autostart-guake.desktop .config/autostart/
+
+# picocom
+sudo apt-get -y install picocom
+
+
+# remmina (remote desktop sharing tool)
+sudo apt-get -y install remmina
+
+using Alt+Tab: Try to press right Ctrl and your keyboard will be fully functional in remote computer. You will be able to use Alt+Tab.
+
+# virtualbox
+wiki.debian.org/VirtualBox
+
+  # vboxdrv not found
+  sudo apt install linux-headers-`uname -r`
+  sudo apt install --reinstall virtualbox-dkms
+  sudo modprobe vboxdrv
+
+# google-chrome
+ - download google chrome
+
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+
+# brave browser
+refer: brave.com/linux
+
+# vivaldi browser
+refer: https://vegastack.com/tutorials/how-to-install-vivaldi-browser-on-debian-12/
+
+# rsync (debian)
+sudo apt-get -y install rsync
+
+# ssh - rsa
+cp -r bkup/.ssh .
+
+
+# git
+ sudo apt-get install git
+
+# wireshark
+ sudo apt-get -y install wireshark
+
+# mg-soft mibbrowser
+install from nas/pub/prog...
+
+  error while loading shared libraries: libpng12.so.0: cannot open shared object file: No such file or directory
+
+  extract libpng12-0_1.2.54-1ubuntu1_amd64.deb to /lib/x86_64-linux-gnu
+
+# barrier - share keyboard & mouse
+sudo apt-get -y install barrier
+
+# meld
+sudo apt-get -y install meld
+
+# decorate top bar
+# show 'week day'
+#   settings > system > clock & calendar > Week Day
+
+# copyq - clipboard manager
+sudo apt-get -y install copyq
+
+#
+# starup application
+#   settings > tweaks > Startup Application
+#
+
+#
+# printer
+# sindoh d320
+#
+
+#
+# samba
+#
+ sudo apt-get install samba -y
+
+ # add user
+ sudo smbpasswd -a USER
+
+# BleachBit (CCleaner)
+ sudo apt-get install bleachbit
+
+# system monitor (top-bar)
+ https://extensions.gnome.org
+ search 'system monitor'
+
+# xbindkeys, xdotool (AutoHotkey)
+ sudo apt-get install xbindkeys xdotool
+
+ ln -s ~/rootfs/home/.xbindkeysrc ~/.xbindkeysrc
+
+////////////////////////////////////////////////////////////////////////////////
+//
+
+# clean-up /var/cache/apt/archives
+
+ sudo apt-get clean
+
+////////////////////////////////////////////////////////////////////////////////
+// check
+Adding this to ~/.Xresources (create if it doesn't exist) worked for me:
+
+xterm*selectToClipboard: true
+
+Just log out and back in, or do a restart. Selected text will then be automatically copied and you can paste it with middle-click (when middle-click is enabled in Gnome-Tweaks)
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+# Synaptic Package Manager & GDebi Package Installer
+sudo apt-get -y install synaptic
+sudo apt-get -y install gdebi
+
+# gksudo
+sudo apt-get -y install gksu
+
+#
+# network
+#
+# dns
+/etc/resolv.conf
+
+# ifconfig
+sudo apt-get -y install net-tools
+
+# ntp
+sudo apt-get -y install ntp
+
+# gvim
+sudo apt-get -y install vim-gnome
+
+# terminator
+sudo apt-get -y install terminator
+
+# rdesktop
+sudo apt-get -y install rdesktop
+
+# filezilla
+sudo apt-get -y install filezilla
+
+# libre office
+sudo apt-get -y install libreoffice
+
+# snmp
+sudo apt-get -y install snmp
+sudo apt-get -y install snmptrapd
+
+# gcc & make
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get -y install build-essential
+
+# vmplayer (ubutu)
+gksudo bash tmp/VMware-Player-6.0.5-2443746.x86_64.bundle
+
+# vmplayer (debian)
+chmod +x data/warehouse/VMware-Player-7.1.0-2496824.x86_64.bundle
+sudo data/warehouse/VMware-Player-7.1.0-2496824.x86_64.bundle
+
+# gparted
+sudo apt-get -y install gparted
+
+# freemind
+sudo apt-get -y install freemind
+
+# unity tweak tool
+https://apps.ubuntu.com/cat/applications/unity-tweak-tool/
+
+# google-chrome
+
+# Indicator-Multiload
+sudo add-apt-repository ppa:indicator-multiload/stable-daily
+sudo apt-get update
+sudo apt-get -y install indicator-multiload
+
+# TeamViewer
+
+# wallch - wallpaper changer
+sudo apt-get -y install wallch
+
+# wine
+
+sudo add-apt-repository ppa:ubuntu-wine/ppa
+sudo apt-get update
+sudo apt-get install -y wine1.7 winetricks
+
+# dolphin
+sudo apt-get -y install dolphin
+
+# midnight commander
+sudo apt-get -y install mc
+
+# packeth
+sudo apt-get -y install packeth
+
+# everpad
+sudo add-apt-repository ppa:nvbn-rm/ppa
+sudo apt-get update
+sudo apt-get install everpad
+
+# Compiz Config Settings Manager
+sudo apt-get -y install compizconfig-settings-manager
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// virtual box
+//
+The VirtualBox Linux kernel driver is either not loaded or not set up correctly. Please reinstall virtualbox-dkms package and load the kernel module by executing
+
+'modprobe vboxdrv'
+
+as root.
+
+sudo apt install --reinstall virtualbox-dkms
+
+sudo apt install linux-headers-`uname -r`
+
+jinynet9@jinux:~$ grep vboxusers /etc/group
+vboxusers:x:122:
+jinynet9@jinux:~$ sudo usermod -aG vboxusers $USER
+[sudo] password for jinynet9: 
+jinynet9@jinux:~$ grep vboxusers /etc/group
+vboxusers:x:122:jinynet9
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// sudo: add-apt-repository: command not found
+//
+sudo apt-get install software-properties-common python-software-properties
+
+# variety (wallpaper changer)
+sudo add-apt-repository ppa:peterlevi/ppa
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Ubuntu Software Center
+//
+
+# ClassMenu Indicator
+
+# Adobe Flash plugin
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// bash
+//
+
+# .profile
+# .bashrc
+
+
+
+
+//******************************************************************************
+//
+// centos
+// dnf, yum
+//
+
+#
+dnf upgrade
+
+# sudo
+chmod u+w /etc/sudoers
+
+# network
+ls /etc/sysconfig/network-scripts/
+
+systemctl restart NetworkManager
+
+or
+
+ifdown ens3
+ifup ens3
+
+ip address
+
+ip route
+
+# gvim
+dnf -y install gvim
+
+#
+# ssh ; change port to 3022
+#
+gvim /etc/ssh/sshd_config 
+
+firewall-cmd --permanent --zone=public --add-port=3022/tcp
+firewall-cmd --reload
+
+#dnf -y install policycoreutils-python-utils
+semanage port -a -t ssh_port_t -p tcp 3022
+
+systemctl restart sshd
+
+netstat -nlpt | grep 3022
+

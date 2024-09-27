@@ -1,0 +1,150 @@
+#!/bin/sh
+#
+#
+
+g_sMyName=`basename $0`
+g_sString=$1  # 찾을 문자열
+g_sRegion=$2  # typedef, #define, declare, 일반적인 참조
+g_sFiles="./"
+
+. regex.src
+
+EXCLUDE="--exclude=.*.o.cmd --exclude=.*.s.cmd --exclude=*.map"              # for KERNEL
+EXCLUDE="${EXCLUDE} --exclude=*.out"
+EXCLUDE="${EXCLUDE} --exclude=*.IAB --exclude=*.IAD --exclude=*.IMB --exclude=*.IMD --exclude=*.PFI --exclude=*.PO --exclude=*.PR --exclude=*.PRI --exclude=*.PS --exclude=*.SearchResults --exclude=*.WK3"
+# -n   Prefix each line of output with the line number within its input file
+# -H   Print the filename for each match
+# -I   ignore binary file
+# -E   Interpret PATTERN as an extended regular expression
+# --   유저가 내린 string('-'를 포함한)을 옵션으로 처리하지 마라
+OPTIONS="-nrHEI ${EXCLUDE} --"
+
+#------------------------------------------------------------------------------
+#
+F_Exact()
+{
+    # function, variable definition
+#    grep ${OPTIONS} "^[. 	]*$1[^a-Z0-9_\-]*" ${g_sFiles}
+    grep ${OPTIONS} "^.*$1[^a-Z0-9_\-]*" ${g_sFiles}
+}
+ 
+#------------------------------------------------------------------------------
+#
+F_Define()
+{
+    # macro(#define)
+    grep ${OPTIONS} "^${SPACES0}#${SPACES0}define${SPACES}$1" ${g_sFiles}
+}
+ 
+#------------------------------------------------------------------------------
+#
+F_Typedef()
+{
+    # typedef
+    grep ${OPTIONS} "^${SPACES0}typedef${SPACES}${ANYS0}$1" ${g_sFiles}
+}
+
+#------------------------------------------------------------------------------
+#
+F_Whole()
+{
+    # used
+    grep ${OPTIONS} "$1" ${g_sFiles}
+}
+
+#------------------------------------------------------------------------------
+#
+F_ShowUsage()
+{
+    echo "usage: $g_sMyName [-wdte] STRING"
+    echo "       -w : whole, -d : define, -t : typedef, -e : exact"
+}
+
+#------------------------------------------------------------------------------
+#
+F_Options()
+{
+    if [ "$1" = "-w" ]; then
+        g_sRegion="whole"
+        shift
+    fi
+
+    if [ "$1" = "-d" ]; then
+        g_sRegion="define"
+        shift
+    fi
+
+    if [ "$1" = "-t" ]; then
+        g_sRegion="typedef"
+        shift
+    fi
+
+    if [ "$1" = "-e" ]; then
+        g_sRegion="exact"
+        shift
+    fi
+}
+
+#------------------------------------------------------------------------------
+#
+F_Main()
+{
+    if [ "$#" = "0" ]; then
+        F_ShowUsage
+        exit 99
+    fi
+
+    if [ "$#" = "1" ]; then
+        g_sRegion="whole"
+    fi
+
+#    F_Options $*
+    if [ "$1" = "-w" ]; then
+        g_sRegion="whole"
+        shift
+    fi
+
+    if [ "$1" = "-d" ]; then
+        g_sRegion="define"
+        shift
+    fi
+
+    if [ "$1" = "-t" ]; then
+        g_sRegion="typedef"
+        shift
+    fi
+
+    if [ "$1" = "-e" ]; then
+        g_sRegion="exact"
+        shift
+    fi
+#
+
+    # 두번째 인자에 따라 
+    case $g_sRegion in
+        exact  )
+            F_Exact $*
+            ;;
+ 
+        define )
+            F_Define $*
+            ;;
+
+        typedef )
+            F_Typedef $*
+            ;;
+
+        whole )
+            F_Whole $*
+            ;;
+
+        * )
+            F_ShowUsage
+            ;;
+    esac
+}
+
+F_Main $*
+
+exit 0
+

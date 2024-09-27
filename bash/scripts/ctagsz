@@ -1,0 +1,16 @@
+#
+# 07-11-23
+#
+. regex.src
+
+EXCLUDE="--exclude=*.o --exclude=*.a --exclude=*.so.*"
+EXCLUDE="${EXCLUDE} --exclude=*.IAB --exclude=*.IAD --exclude=*.IMB --exclude=*.IMD --exclude=*.PFI --exclude=*.PO --exclude=*.PR --exclude=*.PRI --exclude=*.PS --exclude=*.SearchResults --exclude=*.WK3"
+
+OPTIONS="-R ${EXCLUDE}"
+
+# use absolute pathname
+#   relative pathname을 사용할 경우
+#     taga 파일이 존재하는 디렉토리에서의 상대 디렉토리인지,
+#     vi가 시작하는 디렉토리에서의 상대디렉토리인지 혼동
+#
+ctags ${OPTIONS} `pwd`*

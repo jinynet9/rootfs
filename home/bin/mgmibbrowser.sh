@@ -1,0 +1,1 @@
+/usr/local/mg-soft/mgmibbrowser/bin/mgmibbrowser.sh

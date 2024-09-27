@@ -1,0 +1,30 @@
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+#
+# vlan100
+# /etc/init.d/networking stop; /etc/init.d/networking start 
+# systemctl restart networking
+#
+
+#auto enp3s0.100
+#iface enp3s0.100 inet static
+#	address 172.17.1.21
+#	netmask 255.255.0.0
+
+#
+# vlan interface is not working
+# /etc/rc.local
+#
+# sudo modprobe 8021q
+# sudo ip link add link enp3s0 name enp3s0.100 type vlan id 100
+# sudo ip addr add 172.17.1.21/16 dev enp3s0.100
+# sudo ifconfig enp3s0.100 up
+#
+# sudo ip link delete enp3s0.100

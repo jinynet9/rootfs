@@ -1,0 +1,27 @@
+#!/bin/bash
+
+#:docstring strcat:
+# Usage: strcat s1 s2
+#
+# Strcat 은 s2 를 s1 으로 덧붙임.
+#
+# 예제:
+#    a="foo"
+#    b="bar"
+#    strcat a b
+#    echo $a
+#    => foobar
+#
+#:end docstring:
+
+###;;;autoload   ==> Autoloading of function commented out.
+function strcat ()
+{
+    local s1_val s2_val
+
+    s1_val=${!1}                        # 변수 간접참조 확장
+    s2_val=${!2}
+    eval "$1"=\'"${s1_val}${s2_val}"\'
+    # ==> 두 변수중 하나라도 작은 따옴표가 들어 있을 경우에는,
+    # ==> eval $1='${s1_val}${s2_val}' 이라고 하면 됩니다.
+}

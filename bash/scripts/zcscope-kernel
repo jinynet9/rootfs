@@ -1,0 +1,188 @@
+#! /bin/sh
+# 07-11-23
+#
+. regex.src
+
+g_sMyName=`basename $0`
+
+#------------------------------------------------------------------------------
+#
+function F_Usage
+{
+    echo "Usage: $g_sMyName [new | db]"
+    
+    exit 1
+}
+
+g_bNew=0
+g_bDb=0
+
+#------------------------------------------------------------------------------
+#
+function F_Options
+{
+    while [ $# -gt 0 ]; do
+        if [ "$1" = "new" ]; then
+            g_bNew=1
+        elif [ "$1" = "db" ]; then
+            g_bDb=1
+        elif [ "$1" = "-force" ]; then
+            force=1
+        else
+            F_Usage
+        fi
+
+        shift
+    done
+}
+
+#HERE=`pwd`
+HERE="."
+
+CSCOPE_FILES=${HERE}/cscope.files
+ 
+#------------------------------------------------------------------------------
+# 파일을 추가
+#
+function F_FileAdd
+{   
+    local sFile="$1"
+    
+    echo "${sFile}" >> ${CSCOPE_FILES}
+}
+ 
+#------------------------------------------------------------------------------
+# 디렉토리에서 파일을 찾아 추가
+#
+function F_FilesAdd
+{   
+    local sDir="$1"
+    local sFiles="$2"
+    
+    find "${sDir}"                                      \
+        -path "*CVS*"                       -prune -o   \
+        -path "${HERE}/Documentation"       -prune -o   \
+        -path "${HERE}/scripts"             -prune -o   \
+                                                        \
+        -name "${sFiles}"                               \
+        -print >> ${CSCOPE_FILES}
+}
+
+CSCOPE_FILES_TMP="${CSCOPE_FILES}.tmp"
+
+ARCH=${PRJARCH}
+
+FILE_TYPE="*.[chsS]"
+
+#------------------------------------------------------------------------------
+#
+function F_Files
+{
+    if [ -f "${HERE}/cscope.files" -a $g_bNew -ne 1 ]; then
+       return
+    fi
+
+    rm -f ${HERE}/cscope.*
+    rm -f ${HERE}/tags
+
+    # make empty file
+    echo "" > ${CSCOPE_FILES}
+
+    F_FilesAdd ${HERE}	$FILE_TYPE
+
+    #
+    # remove not wanted files && add specified files
+    #
+    # arch
+    rmlines.sh '^\.\/arch\/' ${CSCOPE_FILES}
+    F_FilesAdd "${HERE}/arch/$ARCH"	$FILE_TYPE
+    # include
+    rmlines.sh '^\.\/include\/' ${CSCOPE_FILES}
+    F_FilesAdd "${HERE}/include/asm-generic"	$FILE_TYPE
+    F_FilesAdd "${HERE}/include/asm-$ARCH"	$FILE_TYPE
+    F_FilesAdd "${HERE}/include/config"	$FILE_TYPE
+    F_FilesAdd "${HERE}/include/linux"	$FILE_TYPE
+    F_FilesAdd "${HERE}/include/math-emu"	$FILE_TYPE
+    if [ -f "${HERE}/include/mmcpxa250" ]; then
+    F_FilesAdd "${HERE}/include/mmcpxa250"	$FILE_TYPE
+    fi
+    if [ -f "${HERE}/include/red" ]; then
+    F_FilesAdd "${HERE}/include/red"	$FILE_TYPE
+    fi
+    F_FilesAdd "${HERE}/include/net"	$FILE_TYPE
+    # drivers
+    rmlines.sh '^\.\/drivers\/' ${CSCOPE_FILES}
+    F_FilesAdd "${HERE}/drivers/mtd"	$FILE_TYPE
+    F_FilesAdd "${HERE}/drivers/net"	$FILE_TYPE
+    F_FilesAdd "${HERE}/drivers/dmc"	$FILE_TYPE
+    F_FilesAdd "${HERE}/drivers/redundancy"	$FILE_TYPE
+    # fs
+    rmlines.sh '^\.\/fs\/' ${CSCOPE_FILES}
+    find "${HERE}/fs" -maxdepth 1 -name $FILE_TYPE -print >> ${CSCOPE_FILES}
+    F_FilesAdd "${HERE}/fs/ext2"	$FILE_TYPE
+    F_FilesAdd "${HERE}/fs/jffs2"	$FILE_TYPE
+    # net
+    rmlines.sh '^\.\/net\/' ${CSCOPE_FILES}
+    find "${HERE}/net" -maxdepth 1 -name $FILE_TYPE -print >> ${CSCOPE_FILES}
+    F_FilesAdd "${HERE}/net/core"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/ethernet"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/802"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/8021q"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/bridge"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/ipv4"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/ipv6"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/netlink"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/sched"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/unix"	$FILE_TYPE
+    F_FilesAdd "${HERE}/net/packet"	$FILE_TYPE
+    # ?
+    rmlines.sh '^\.\/block\/' ${CSCOPE_FILES}
+    rmlines.sh '^\.\/sound\/' ${CSCOPE_FILES}
+    rmlines.sh '^\.\/samples\/' ${CSCOPE_FILES}
+    # drivers/net/?
+    rmlines.sh '\/appletalk\/' ${CSCOPE_FILES}
+    rmlines.sh '\/tokenring\/' ${CSCOPE_FILES}
+    rmlines.sh '\/wireless\/' ${CSCOPE_FILES}
+    rmlines.sh '\/xilinx_enet\/' ${CSCOPE_FILES}
+    rmlines.sh '\/usb\/' ${CSCOPE_FILES}
+    rmlines.sh '\/irda\/' ${CSCOPE_FILES}
+    rmlines.sh '\/wimax\/' ${CSCOPE_FILES}
+    rmlines.sh '\/wan\/' ${CSCOPE_FILES}
+    rmlines.sh '\/pcmcia\/' ${CSCOPE_FILES}
+}
+
+CSCOPE_OPTIONS="-b"
+
+#------------------------------------------------------------------------------
+#
+function F_DbBuild
+{
+    if [ -f "${HERE}/cscope.out" -a $g_bNew -ne 1 ]; then
+        return
+    fi
+
+    #ctags `cat ${HERE}/cscope.files`
+    cscope ${CSCOPE_OPTIONS}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Main
+{
+    F_Options $*
+    
+    F_Files $*
+
+    F_DbBuild $*
+
+    ctags -L ${CSCOPE_FILES}
+
+    if [ $g_bDb -eq 1 ]; then
+	exit 0
+    fi
+
+    cscope 
+}
+
+F_Main $*
+exit 0

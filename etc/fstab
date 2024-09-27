@@ -1,0 +1,51 @@
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# systemd generates mount units based on this file, see systemd.mount(5).
+# Please run 'systemctl daemon-reload' after making changes here.
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/sdb1 during installation
+UUID=9bac07c7-a239-4af4-a7e9-6127552c475c /               ext4    errors=remount-ro 0       1
+# /home was on /dev/sdb2 during installation
+UUID=86673d6e-527c-4e5b-a5e8-8f361da230eb /home           btrfs   defaults        0       0
+# swap was on /dev/sda3 during installation
+UUID=81c713b4-d105-40d4-83e0-a7d9942ba03d none            swap    sw              0       0
+/dev/sr1        /media/cdrom0   udf,iso9660 user,noauto     0       0
+/dev/sr0        /media/cdrom1   udf,iso9660 user,noauto     0       0
+
+
+################################################################################
+#
+#
+#
+
+# data
+#/dev/sdb1   /home/jinynet9/data   ext4   errors=remount-ro   0   0
+#/dev/sdc1   /home/jinynet9/vbox   ext4   errors=remount-ro   0   0
+UUID=51ac2e86-71a1-4934-9c8e-badc3d1b800e   /home/jinynet9/data   ext4   errors=remount-ro   0   0
+UUID=b9948424-117e-4572-b502-0b53b3cdb0e5   /home/jinynet9/vbox   ext4   errors=remount-ro   0   0
+
+#
+# mount example
+#
+#sudo mount -t cifs -o uid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,vers=2.0 //172.17.0.21/home /home/jinynet9/mnt/nas.21_jinynet9
+#sudo mount -t cifs -o uid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,sec=ntlmssp //172.17.0.4/jinynet9 /home/jinynet9/mnt/ceres.4
+
+
+# nas
+//172.17.0.21/home /home/jinynet9/mnt/nas.21_jinynet9 cifs uid=1000,gid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,vers=2.0,_netdev 0 0
+//172.17.0.21/project /home/jinynet9/mnt/nas.21_project cifs uid=1000,gid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,vers=2.0,_netdev 0 0
+## nox
+#//172.17.0.12/jinynet9 /home/jinynet9/mnt/nox.12 cifs uid=1000,gid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,vers=1.0,_netdev 0 0
+## apollo
+#//172.17.0.6/jinynet9 /home/jinynet9/mnt/apollo.6 cifs uid=1000,gid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,vers=1.0,_netdev 0 0
+## ceres
+//172.17.0.4/jinynet9 /home/jinynet9/mnt/ceres.4 cifs uid=1000,gid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,sec=ntlmssp,_netdev 0 0
+## nike
+//172.17.0.9/jinynet9 /home/jinynet9/mnt/nike.9 cifs uid=1000,gid=1000,username=jinynet9,pass=wjsurshf,iocharset=utf8,sec=ntlmssp,_netdev 0 0
+## notebook
+#//172.17.211.11/web2.0 /home/jinynet9/mnt/notebook.11 cifs username=root,pass=admin,iocharset=utf8,vers=1.0,_netdev 0 0

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# string.bash --- string(3) 라이브러리의 bash 에뮬레이션 버전
+# 저자: Noah Friedman <friedman@prep.ai.mit.edu>
+# ==>     저자의 허락하에 이 문서에 게재함.
+# Created: 1992-07-01
+# Last modified: 1993-09-29
+# Public domain
+
+# Chet Ramey 가 bash 버전 2 문법을 쓰도록 변환
+
+# Commentary:
+# Code:
+
+
+
+source strcat.src
+source strncat.src
+source strcmp.src
+source strncmp.src
+source strlen.src
+source strspn.src
+source strcspn.src
+source strstr.src
+source strtok.src

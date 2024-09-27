@@ -1,0 +1,200 @@
+#! /bin/sh
+# 07-11-23
+#
+. regex.src
+
+g_sMyName=`basename $0`
+
+#------------------------------------------------------------------------------
+#
+function F_Usage
+{
+    echo "Usage: $g_sMyName [new | db]"
+    
+    exit 1
+}
+
+g_bNew=0
+g_bDb=0
+
+#------------------------------------------------------------------------------
+#
+function F_Options
+{
+    while [ $# -gt 0 ]; do
+        if [ "$1" = "new" ]; then
+            g_bNew=1
+        elif [ "$1" = "db" ]; then
+            g_bDb=1
+        elif [ "$1" = "-force" ]; then
+            force=1
+        else
+            F_Usage
+        fi
+
+        shift
+    done
+}
+
+#HERE=`pwd`
+HERE="."
+
+CSCOPE_FILES="${HERE}/cscope.files"
+CSCOPE_FILES_TMP="${CSCOPE_FILES}.tmp"
+
+#------------------------------------------------------------------------------
+# 파일을 추가
+#
+function F_FileAdd
+{   
+    local sFile="$1"
+    
+    echo "${sFile}" >> ${CSCOPE_FILES}
+}
+
+#------------------------------------------------------------------------------
+#
+#
+function F_FilesAdd
+{   
+    local sDir="$1"
+    local sFiles="$2"
+
+    if [ ! -d $sDir ]; then
+    	return
+    fi
+    
+    find "${sDir}"                                      \
+        -path "*CVS*"                       -prune -o   \
+        -path "*.swp"                       -prune -o   \
+        -path "${HERE}/Documentation"       -prune -o   \
+        -path "${HERE}/scripts"             -prune -o   \
+                                                        \
+        -name "${sFiles}"                               \
+        -print >> ${CSCOPE_FILES}
+}
+ 
+#------------------------------------------------------------------------------
+# 디렉토리에서 파일을 찾아 추가
+#
+function F_ZebosFilesAdd
+{   
+#    local sDir="$1"
+    local sFiles="$1"
+
+#    	    -path "*/hsl/*" -o 				\
+#
+
+    find ${HERE}                                        \
+	! \( \(						\
+    	    -path "*/stpd/*" -o				\
+    	    -path "*/rstpd/*" -o			\
+    	    -path "*/vtysh/*" -o			\
+    	    -path "*/l2swfwdr/*" -o			\
+    	    -path "*/swfwdr/*" -o			\
+    	    -path "*/dummy/*" -o			\
+    	    -path "*/freebsd/*" -o			\
+    	    -path "*/lynxos/*" -o 			\
+    	    -path "*/netbsd/*" -o			\
+    	    -path "*/openbsd/*" -o			\
+    	    -path "*/ose/*" -o				\
+    	    -path "*/ose_ipnet/*" -o			\
+    	    -path "*/solaris/*" -o			\
+    	    -path "*/windows/*" -o			\
+    	    -path "*/obj/*"				\
+	 \) -prune \) 					\
+                                                    	\
+	! -type l				    	\
+                                                    	\
+        \(  -name '*.[chsS]'    -o                  	\
+            -name '*.def'       -o                  	\
+            -name '*.proto'     -o                  	\
+            -name '*.proto'     -o                  	\
+            -name 'Rules.*'     -o                  	\
+            -name 'Makefile'                        	\
+        \)                                          	\
+        -print >> ${CSCOPE_FILES}
+
+    find ${HERE} -name *debug_trace* -type l -exec readlink {} \; \
+        >> ${CSCOPE_FILES}
+
+    readlink platform/linux/Nubi.h >> ${CSCOPE_FILES}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Files
+{
+    if [ -f "${CSCOPE_FILES}" -a $g_bNew -ne 1 ]; then
+       return
+    fi
+
+    rm -f ${HERE}/cscope.*
+    rm -f ${HERE}/tags
+
+    echo "" > ${CSCOPE_FILES}
+
+    F_ZebosFilesAdd
+
+    F_FileAdd "lib/cli.pl"
+    F_FileAdd "config.h.in"
+    F_FileAdd "configure.ac"
+ 
+    # remove unwanted files
+    awk '$0 !~/mpls/ {printf("%s\n", $0)}' ${CSCOPE_FILES} > ${CSCOPE_FILES_TMP}
+    mv ${CSCOPE_FILES_TMP} ${CSCOPE_FILES}
+    awk '$0 !~/\/custom\// {printf("%s\n", $0)}' ${CSCOPE_FILES} > ${CSCOPE_FILES_TMP}
+    mv ${CSCOPE_FILES_TMP} ${CSCOPE_FILES}
+    awk '$0 !~/\/custom1\// {printf("%s\n", $0)}' ${CSCOPE_FILES} > ${CSCOPE_FILES_TMP}
+    mv ${CSCOPE_FILES_TMP} ${CSCOPE_FILES}
+
+    rmlines.sh "hsl\/broadcom\/linux\/L3\/ipnet2\/hsl_stack.c" ${CSCOPE_FILES}
+
+    #
+    F_FilesAdd ../common/include "*.[chsS]"
+    F_FilesAdd ../libcommon "*.[chsS]"
+
+    rmlines.sh "imi\/util\/imi_server.c"	${CSCOPE_FILES}
+    rmlines.sh "hal\/hsl\/hal_comm.c"		${CSCOPE_FILES}
+}
+
+#CSCOPE_OPTIONS="-b -I$INCDIR"
+
+#------------------------------------------------------------------------------
+#
+function F_DbBuild
+{
+    if [ -f "${HERE}/cscope.out" -a $g_bNew -ne 1 ]; then
+        return
+    fi
+
+    if [ -z "$INCDIR" ]; then
+        CSCOPE_OPTIONS="-b"
+    else
+        CSCOPE_OPTIONS="-b -I$INCDIR"
+    fi
+
+    #ctags `cat ${HERE}/cscope.files`
+    cscope ${CSCOPE_OPTIONS}
+}
+
+#------------------------------------------------------------------------------
+#
+function F_Main
+{
+    F_Options $*
+    
+    F_Files $*
+
+    ctags -L ${CSCOPE_FILES}
+
+    if [ $g_bDb -eq 1 ]; then
+        F_DbBuild
+        exit 0
+    fi
+
+    cscope 
+}
+
+F_Main $*
+exit 0
