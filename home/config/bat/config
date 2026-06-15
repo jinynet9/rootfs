@@ -1,0 +1,5 @@
+# ~/.config/bat/config
+
+# Always use C syntax highlighting if unknown
+--language="yaml"
+

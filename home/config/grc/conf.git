@@ -1,0 +1,34 @@
+# ~/.grc/conf.git
+# Color rules for git command output
+
+# Cloning messages
+regexp=^Cloning into
+colours=green
+-
+regexp=^remote:
+colours=cyan
+-
+regexp=^Receiving objects
+colours=yellow
+-
+regexp=^Resolving deltas
+colours=magenta
+-
+regexp=^Updating
+colours=yellow
+-
+regexp=^Already up to date
+colours=cyan
+-
+regexp=error:
+colours=red
+-
+regexp=fatal:
+colours=red
+-
+regexp=warning:
+colours=magenta
+-
+regexp=Note:
+colours=blue
+

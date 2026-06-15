@@ -1,0 +1,18 @@
+# ~/.grc/ar - Colorize ar (archive) output
+
+regexp=creating\s+archive
+colours=bold green
+count=more
+======
+regexp=adding\s+object
+colours=bold cyan
+count=more
+======
+regexp=deleting\s+member
+colours=bold yellow
+count=more
+======
+regexp=(?i)error
+colours=bold red
+count=more
+

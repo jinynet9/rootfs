@@ -1,0 +1,59 @@
+{
+    "child": {
+        "child1": {
+            "child1": {
+                "directory": "",
+                "profile": "default",
+                "readOnly": false,
+                "synchronizedInput": false,
+                "type": "Terminal",
+                "uuid": "terminal1"
+            },
+            "child2": {
+                "directory": "",
+                "profile": "default",
+                "readOnly": false,
+                "synchronizedInput": false,
+                "type": "Terminal",
+                "uuid": "terminal2"
+            },
+            "orientation": 1,
+            "position": 50,
+            "ratio": 0.5,
+            "type": "Paned"
+        },
+        "child2": {
+            "child1": {
+                "directory": "",
+                "profile": "default",
+                "readOnly": false,
+                "synchronizedInput": false,
+                "type": "Terminal",
+                "uuid": "terminal3"
+            },
+            "child2": {
+                "directory": "",
+                "profile": "default",
+                "readOnly": false,
+                "synchronizedInput": false,
+                "type": "Terminal",
+                "uuid": "terminal4"
+            },
+            "orientation": 1,
+            "position": 50,
+            "ratio": 0.5,
+            "type": "Paned"
+        },
+        "orientation": 0,
+        "position": 50,
+        "ratio": 0.5,
+        "type": "Paned"
+    },
+    "name": "${title}",
+    "synchronizedInput": false,
+    "type": "Session",
+    "uuid": "dev-terminal",
+    "version": "1.0",
+    "height": 1360,
+    "width": 1700
+}

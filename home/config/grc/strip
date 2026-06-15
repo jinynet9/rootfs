@@ -1,0 +1,14 @@
+# ~/.grc/strip - Colorize strip output
+
+regexp=(?i)invalid file
+colours=bold red
+count=more
+======
+regexp=(?i)stripped
+colours=bold green
+count=more
+======
+regexp=(?i)error
+colours=bold red
+count=more
+

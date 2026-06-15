@@ -1,0 +1,38 @@
+# ~/.grc/gcc - Colorize GCC output
+
+regexp=(?i)^.*error:
+colours=bold red
+count=more
+======
+regexp=(?i)^.*warning:
+colours=bold yellow
+count=more
+======
+regexp=(?i)note:
+colours=bold cyan
+count=more
+======
+regexp=(?i)In function
+colours=bold magenta
+count=more
+======
+regexp=^\s*compiling
+colours=bold green
+count=more
+======
+regexp=^\s*linking
+colours=bold blue
+count=more
+======
+regexp=\bundefined reference\b
+colours=bold red
+count=more
+======
+regexp=\bdeprecated\b
+colours=bold yellow
+count=more
+======
+regexp=\bsegmentation fault\b
+colours=bold red
+count=more
+

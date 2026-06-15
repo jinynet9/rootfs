@@ -1,0 +1,84 @@
+# ~/.grc/conf.build - colorize output
+
+regexp=(?i).*error:
+colours=bold red
+count=more
+======
+regexp=(?i).*warning:
+colours=bold yellow
+count=more
+======
+# build tool, gcc (with optional prefix)
+#regexp=\s*(\S+-)?(cc|gcc|g++|ld|ar|strip|objcopy|objdump)\s+
+regexp=\s*\b([\w-]+-)?(cc|gcc|g\+\+|ld|ar|strip|objcopy|objdump)\s+
+colours=bold cyan
+count=more
+======
+# compiler flags
+#regexp=\s(-[OIfDLWfg][^ \t]*)+
+#colours=yellow
+#count=more
+======
+# source file
+#regexp=[^ \t]+\.(c|h|cpp)\s*
+regexp=\b[\w.-]+\.(o|c|a|so|h)\b
+colours=bold blue
+count=more
+======
+# file manipulation commands
+regexp=\s*(make|rm|mkdir|echo|touch|cp|install|cd)\s+
+colours=green
+count=more
+======
+# make depth
+regexp=\s*make\[[0-9]+\]: (Entering|Leaving) directory
+colours=yellow
+count=more
+======
+# path names (absolute or relative)
+#regexp=/[A-Za-z0-9_\-./]+
+#regexp=(\.{1,2}/|/)[A-Za-z0-9_.\-/]+
+regexp=((\.{1,2}/)+|/)[A-Za-z0-9_.\-/]+
+colours=white
+count=more
+======
+# out file
+regexp=\s+-o[ \t]+([^\s]+)
+colours=red
+count=more
+
+#
+# \S      non space char
+# \s      space char
+# ^\s*    ignore leading whitespace at the start of a line
+# ()?     optional
+# (?i)    case-insensitive
+# \w      word -> [A-Za-z0-9_]  (exclude '-')
+# [\w-]   word + '-'
+# \W      non word
+# \b      word boundary (space, EOL, special char)
+# \d      digit
+#
+
+#
+# style
+#
+# bold
+# underline
+# blink
+# reverse
+# concealed    hide
+#
+
+#
+# color
+#
+# black
+# red
+# green
+# yellow
+# blue
+# magenta
+# cyan
+# white
+#

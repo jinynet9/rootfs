@@ -1,0 +1,22 @@
+# ~/.grc/ld - Colorize linker (ld) output
+
+regexp=(?i)undefined reference
+colours=bold red
+count=more
+======
+regexp=(?i)cannot find
+colours=bold red
+count=more
+======
+regexp=(?i)duplicate symbol
+colours=bold yellow
+count=more
+======
+regexp=(?i)linker input file unused
+colours=bold cyan
+count=more
+======
+regexp=(?i)error:
+colours=bold red
+count=more
+

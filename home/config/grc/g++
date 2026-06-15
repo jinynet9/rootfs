@@ -1,0 +1,26 @@
+# ~/.grc/g++ - Colorize G++ output
+
+regexp=(?i)^.*error:
+colours=bold red
+count=more
+======
+regexp=(?i)^.*warning:
+colours=bold yellow
+count=more
+======
+regexp=(?i)\btemplate\b
+colours=bold magenta
+count=more
+======
+regexp=(?i)\bnamespace\b
+colours=bold cyan
+count=more
+======
+regexp=(?i)\bstd::\b
+colours=bold blue
+count=more
+======
+regexp=\bundefined reference\b
+colours=bold red
+count=more
+

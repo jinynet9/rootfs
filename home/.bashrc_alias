@@ -1,0 +1,44 @@
+
+alias ls='ls -CF --color=auto --show-control-chars'
+alias l='ls -lF'
+alias ll='ls -alF'
+alias dir='ll | less'
+alias grep='grep --color -I --exclude=*.cmd --exclude=*.dep --exclude=tags --exclude=cscope* --exclude=*.out'
+
+alias ff='ff.sh'
+alias ffs='ffs.sh'
+
+alias gr="find . -name '*.[chS]' | xargs grep -n --color=always --directories=skip --devices=skip "
+alias grn="find . -name '*.[chS]' | xargs grep -n --directories=skip --devices=skip "
+alias gra="find . -name '*' -and ! -name 'tags' -and ! -name '*.tags' -and ! -name 'tags.*' | xargs grep -n --color=always --directories=skip "
+
+alias pdfer=evince
+
+#
+# project alias
+#
+file=~/control-project/tools/prj_alias
+[ -f $file ] && source $file
+
+#
+#
+#
+[ "$HOSTNAME" != "jinux" ] && return 0
+
+
+_CONFDIR="~/rootfs/home/.config"
+
+#
+# tilix
+#
+CONFDIR="$_CONFDIR/tilix"
+alias tilix2="tilix --session=$CONFDIR/layout2.json &"
+alias tilix4="tilix --session=$CONFDIR/layout4.json &"
+
+#
+# terminator
+#
+CONFDIR="$_CONFDIR/terminator"
+#alias term2="terminator -g $CONFDIR/config_panes2 -l panes2 &"
+alias term2="terminator -g $CONFDIR/config_panes2 &"
+alias term4="terminator -g $CONFDIR/config_panes4 &"

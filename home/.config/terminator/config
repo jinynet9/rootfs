@@ -1,0 +1,47 @@
+[global_config]
+  enabled_plugins = CustomCommandsMenu, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler
+  suppress_multiple_term_dialog = True
+[keybindings]
+[profiles]
+  [[default]]
+    use_custom_command = True
+    custom_command = ssh -X green
+[layouts]
+  [[default]]
+    [[[window0]]]
+      type = Window
+      parent = ""
+    [[[child1]]]
+      type = Terminal
+      parent = window0
+  [[panes2]]
+    [[[child0]]]
+      type = Window
+      parent = ""
+      order = 0
+      position = 936:32
+      maximised = False
+      fullscreen = False
+      size = 1062, 1371
+      title = /bin/bash
+      last_active_term = a93fbba5-56c9-4426-a993-dfe3958c3f82
+      last_active_window = True
+    [[[child1]]]
+      type = VPaned
+      parent = child0
+      order = 0
+      position = 683
+      ratio = 0.5
+    [[[terminal2]]]
+      type = Terminal
+      parent = child1
+      order = 0
+      profile = default
+      uuid = a93fbba5-56c9-4426-a993-dfe3958c3f82
+    [[[terminal3]]]
+      type = Terminal
+      parent = child1
+      order = 1
+      profile = default
+      uuid = 68c50139-20ad-4696-9db4-ee01eb25a9ef
+[plugins]

@@ -219,8 +219,9 @@ nmap <C-[>i :cs find i <C-R>=expand("<cfile>")<CR><CR>
 "
 "The semicolon in the first command is essential. This command let vim first in the current directory to look for tags files, if not find the tags file, or do not find the corresponding target, go to the parent directory to find, always upward recursion. Because the path that is recorded in the tags file is always relative to the path where the tags file is located, use the second setting to change the current directory of Vim.
 "set tags=tags;SetAutochdir
-"set tags=tags;
-set tags=./tags
+set tags=tags;
+"set tags=./tags;.tags
+"set tags=./tags,$DPDK/tags
 
 
 "------------------------------------------------------------------------------
@@ -229,6 +230,10 @@ set tags=./tags
 " [range]s/oldpattern/newpattern/
 "
 " :%s/\<old\>/new/gc     # file(%) target, line, confirm
+" ^Ww
+"        ^Ww
+"               " open file in file manager
+"        " open file in file manager
 " :'<,'>s/old/new/gc     # block (visual)
 
 "------------------------------------------------------------------------------
@@ -320,4 +325,76 @@ set omnifunc=syntaxcomplete#Complete
 "------------------------------------------------------------------------------
 "-- PLUGINS (Using junegunn/vim-plug) --
 "
+
+"------------------------------------------------------------------------------
+"
+"
+
+"function! FindTag(tag)
+"    let l:current_dir = expand('%:p:h') " 현재 파일의 디렉토리
+"    let l:tag_found = 0
+"
+"    while l:current_dir != '/'
+"        let l:tags_file = l:current_dir . '/tags'
+"        if filereadable(l:tags_file)
+"            " 태그 파일에서 검색
+"            let l:cmd = 'silent! tag ' . a:tag . ' | if !v:errmsg | let l:tag_found = 1 | endif'
+"            execute l:cmd
+"            if l:tag_found
+"                break
+"            endif
+"        endif
+"        let l:current_dir = fnamemodify(l:current_dir, ':h') " 상위 디렉토리로 이동
+"    endwhile
+"
+"    if !l:tag_found
+"        echo '태그를 찾을 수 없습니다: ' . a:tag
+"    endif
+"endfunction
+"
+"nnoremap <C-]> :call FindTag(expand('<cword>'))<CR>
+
+
+"------------------------------------------------------------------------------
+"
+" :PlugInstall    " 플러그인 설치
+" :PlugUpdate     " 플러그인 업데이트  
+" :PlugClean      " 사용하지 않는 플러그인 제거
+"
+" :PlugStatus     " 플러그인 상태 확인
+" :scriptnames    " 로드된 스크립트 목록 확인
+"
+" 플러그인 설치 디렉토리 지정
+call plug#begin('~/.vim/plugged')
+
+" GitHub에서 자동 다운로드
+Plug 'preservim/nerdcommenter'
+Plug 'preservim/nerdtree'
+" :AirlineToggle
+" :AirlineRefresh
+"Plug 'vim-airline/vim-airline'
+
+call plug#end()
+
+" NERDCommenter: use // instead of /* */
+let g:NERDUsePlaceholders = 1
+let g:NERDCustomDelimiters = {
+    \ 'c'  : { 'left': '//', 'right': '' },
+    \ 'cpp': { 'left': '//', 'right': '' }
+\ }
+
+let g:NERDDefaultAlign = 'left'        " 항상 왼쪽 정렬
+
+
+"------------------------------------------------------------------------------
+"
+"
+
+" Expand environment variable
+let prjroot = expand('$PRJROOT')
+
+" Check if PRJROOT is defined and has a .vimrc file
+if !empty(prjroot) && filereadable(prjroot . '/.vimrc')
+    execute 'source ' . fnameescape(prjroot . '/.vimrc')
+endif
 

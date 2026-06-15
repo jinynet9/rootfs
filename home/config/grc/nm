@@ -1,0 +1,22 @@
+# ~/.grc/nm - Colorize nm output
+
+regexp=\bT\b
+colours=bold green
+count=more
+======
+regexp=\bU\b
+colours=bold red
+count=more
+======
+regexp=\bB\b
+colours=bold yellow
+count=more
+======
+regexp=\bD\b
+colours=bold cyan
+count=more
+======
+regexp=\bW\b
+colours=bold magenta
+count=more
+

@@ -75,7 +75,7 @@
     Alt + 2
 
 # 브레이브 실행 또는 활성화
-"xdotool search --onlyvisible --class 'brave' windowactivate || brave &"
+"xdotool search --onlyvisible --class 'brave' windowactivate || brave-browser &"
     Alt + 3
 
 # 파이어폭스 실행 또는 활성화

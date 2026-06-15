@@ -1,9 +1,22 @@
 
+*.o
+*.so
+*.a
+*.d
+
 *.swp
 *.swo
 *.swn
+*.org
+*[.-][0-9][0-9][0-9][0-9][0-9][0-9]*
+
+*.priv
+*.bkup
+
+!*/
 
 **/*-bkup/
+docz/
 
 cscope.*
 tags

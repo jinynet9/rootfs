@@ -1,129 +1,116 @@
-#! /bin/sh
-# 07-11-23
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Generate cscope and ctags database from source files relative to current dir
+# Allows:
+#   - Specifying file patterns to include (e.g. *.c, *.h)
+#   - Excluding specific files/directories
+#   - Manually adding specific files
+# ------------------------------------------------------------------------------
+
+CSCOPE_FILE="cscope.files"
+
+# File patterns to include
+INCLUDE_PATTERNS=("*.c" "*.h")
+
+# Directories or files to exclude (relative to current directory)
+#EXCLUDE_PATHS=("build_dir" "./ignore_this.c")
+EXCLUDE_PATHS=("build_dir")
+
+# Specific files to include manually (even if they don't match find)
+#INCLUDE_FILES=("special.c" "extra/path/to/header.h")
+INCLUDE_FILES=()
+
+# Remove old files
+rm -f cscope.* tags
+
+# Create empty cscope.files
+> "$CSCOPE_FILE"
+
+
+# Build exclusion expression
+EXCLUDE_EXPR=()
+for path in "${EXCLUDE_PATHS[@]}"; do
+    EXCLUDE_EXPR+=( -path "$path" -o )
+done
+# Remove trailing -o
+if [ ${#EXCLUDE_EXPR[@]} -gt 0 ]; then
+    unset 'EXCLUDE_EXPR[${#EXCLUDE_EXPR[@]}-1]'
+fi
+
+# Build name pattern expression
+NAME_EXPR=()
+for pattern in "${INCLUDE_PATTERNS[@]}"; do
+    NAME_EXPR+=( -name \""$pattern"\" -o )
+done
+unset 'NAME_EXPR[${#NAME_EXPR[@]}-1]'
+
+# Run find
+#find . \
+#    \( "${EXCLUDE_EXPR[@]}" \) -prune -o \
+#    \( "${NAME_EXPR[@]}" \) -type f -print >> "$CSCOPE_FILE"
 #
-# when importing cscope.out, you can supply the prefix, i.e.
-# :cscope add /path/to/cscope.out /path/to
-#
+#echo find . \( "${EXCLUDE_EXPR[@]}" \) -prune -o \( "${NAME_EXPR[@]}" \) -type f -print
 
-. regex.src
+FIND_CMD="find . \( ${EXCLUDE_EXPR[*]} \) -prune -o \( ${NAME_EXPR[*]} \) -type f -print"
 
-g_sMyName=`basename $0`
+echo "$FIND_CMD"
 
-#------------------------------------------------------------------------------
-#
-F_Usage ()
-{
-    echo "Usage: $g_sMyName [new | db]"
-    
-    exit 1
-}
+eval "$FIND_CMD" >> "$CSCOPE_FILE"
 
-g_bNew=0
-g_bDb=0
-
-#------------------------------------------------------------------------------
-#
-F_Options ()
-{
-    while [ $# -gt 0 ]; do
-        if [ "$1" = "new" ]; then
-            g_bNew=1
-        elif [ "$1" = "db" ]; then
-            g_bDb=1
-        elif [ "$1" = "-force" ]; then
-            force=1
-        else
-            F_Usage
-        fi
-
-        shift
-    done
-}
-
-#HERE=`pwd`
-HERE="."
-
-RHERE="~/${PWD#"$HOME"/}"
-
-CSCOPE_FILES="${HERE}/cscope.files"
-CSCOPE_FILES_TMP="${CSCOPE_FILES}.tmp"
-
-#------------------------------------------------------------------------------
-# 디렉토리에서 파일을 찾아 추가
-#
-F_FilesAdd ()
-{
-    local sDir="$1"
-    local sFiles="$2"
- 
-    # Write only the files which are NOT symlinks
-    find ${sDir} \( ! \( \( -type d -path "${HERE}/CVS" -type d -o -path "${HERE}/tmp" \) -prune \) -name "${sFiles}" -and \( -not -type l \) \) -print >> ${CSCOPE_FILES}
-
-    # Add the target of the symlink for all files matching the right extension, and are symlinks
-    find ${sDir} \( ! \( \( -type d -path "${HERE}/CVS" -type d -o -path "${HERE}/tmp" \) -prune \) -name "${sFiles}" -and -type l \) -printf "%l\n" >> ${CSCOPE_FILES}
-}
-
-rmlines ()
-{
-    local pattern=$1
-    local mark="-+-+-"
-
-    sed "s%${1}/%$mark%" $CSCOPE_FILES > $CSCOPE_FILES_TMP
-    sed "/$mark/d" $CSCOPE_FILES_TMP > $CSCOPE_FILES
-}
-
-#------------------------------------------------------------------------------
-#
-F_Files ()
-{
-    if [ -f "${CSCOPE_FILES}" -a $g_bNew -ne 1 ]; then
-       return
+# Add manually included files
+for file in "${INCLUDE_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        echo "$file" >> "$CSCOPE_FILE"
     fi
+done
 
-    rm -f ${HERE}/cscope.*
-    rm -f ${HERE}/tags
- 
-    # make empty file
-    echo "" > ${CSCOPE_FILES}
+# Remove duplicates
+sort -u -o "$CSCOPE_FILE" "$CSCOPE_FILE"
 
-    F_FilesAdd "${HERE}"    "*.[chsS]"
-    F_FilesAdd "${HERE}"    "*.cpp"
-}
 
-CSCOPE_OPTIONS="-b"
+# Generate tag files
+ctags -L "$CSCOPE_FILE"
+#ctags -L "$CSCOPE_FILE" --fields=+iaS --extra=+q -f tags
 
-#------------------------------------------------------------------------------
-#
-F_DbBuild ()
-{
-    if [ -f "${HERE}/cscope.out" -a $g_bNew -ne 1 ]; then
-        return
-    fi
+#cscope -b -q -k -i "$CSCOPE_FILE"
+cscope -b -i "$CSCOPE_FILE"
 
-    if [ ! -z $INCDIR ]; then
-    	CSCOPE_OPTIONS="$CSCOPE_OPTIONS -I$INCDIR"
-    fi
+echo "cscope and ctags files generated."
 
-    cscope ${CSCOPE_OPTIONS}
-}
-
-#------------------------------------------------------------------------------
-#
-F_Main ()
-{
-    F_Options $*
-    
-    F_Files $*
-
-    ctags -L ${CSCOPE_FILES}
-
-    if [ $g_bDb -eq 1 ]; then
-        F_DbBuild
-        exit 0
-    fi
-
-    cscope
-}
-
-F_Main $*
 exit 0
+
+################################################################################
+#
+#
+
+# Build find command with exclusion rules
+EXCLUDE_FIND_ARGS=()
+for path in "${EXCLUDE_PATHS[@]}"; do
+    EXCLUDE_FIND_ARGS+=(-path "$path" -prune -o)
+done
+
+# Add matching source files (excluding the specified paths)
+for pattern in "${INCLUDE_PATTERNS[@]}"; do
+    find . "${EXCLUDE_FIND_ARGS[@]}" -type f -name "$pattern" -print >> "$CSCOPE_FILE"
+done
+
+# Manually add specific files
+for file in "${INCLUDE_FILES[@]}"; do
+    if [ -f "$file" ]; then
+        echo "$file" >> "$CSCOPE_FILE"
+    fi
+done
+
+# Remove duplicates lines
+sort -u -o "$CSCOPE_FILE" "$CSCOPE_FILE"
+
+# Generate tag files
+ctags -L "$CSCOPE_FILE"
+#ctags -L "$CSCOPE_FILE" --fields=+iaS --extra=+q -f tags
+
+#cscope -b -q -k -i "$CSCOPE_FILE"
+cscope -b -i "$CSCOPE_FILE"
+
+echo "cscope and ctags files generated."
+

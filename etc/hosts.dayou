@@ -1,0 +1,40 @@
+127.0.0.1	localhost
+127.0.1.1	jinux
+172.17.0.211	testsvr
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+#172.17.0.1      era.dmcit.co.kr era
+#172.17.0.2      zeus.dmcit.co.kr zeus cvs cvs.dmcit.co.kr
+#172.17.0.3      nanum.dmcit.co.kr nanum
+#172.17.0.4      ceres.dmcit.co.kr ceres
+#172.17.0.12	nox.dmcit.co.kr nox
+#172.17.0.12	cricket.dmcit.co.kr
+#172.17.0.12     spider.dmcit.co.kr spider
+#172.17.0.12     mantis.dmcit.co.kr mantis
+#172.17.0.12	wiki.dmcit.co.kr wiki
+#172.17.0.13	fox.dmcit.co.kr fox
+#172.17.0.6	apollo.dmcit.co.kr	apollo
+#172.17.0.7	venus.dmcit.co.kr	venus
+#172.17.0.8	ares.dmcit.co.kr ares
+#172.17.0.9	nika.dmcit.co.kr nika
+#172.17.0.10	printer.dmcit.co.kr printer
+#172.17.0.11	n2x.dmcit.co.kr n2x
+#172.17.0.21	nas.dmcit.co.kr nas
+#172.17.0.31     mars.dmcit.co.kr mars
+#172.17.1.91	woo.dmcit.co.kr	woo
+#172.17.1.51     love.dmcit.co.kr love
+#
+#172.17.0.209	logsvr.dmcit.co.kr logsvr
+#
+#172.17.0.211	gitsvr.dmcit.co.kr gitsvr testSvr.dmcit.co.kr testSvr
+#
+#219.249.204.104 cricket.dayou.co.kr cricket venus
+#219.249.204.103 spider.dayou.co.kr spider
+#219.249.204.103 mantis.dayou.co.kr mantis
+

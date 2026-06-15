@@ -1,7 +1,8 @@
 #
 # rootfs/home/.bashrc
 #
-# excuted by '~/.bashrc'
+# excuted by '~/.profile'
+#   . ~/rootfs/home/.bashrc
 #
 
 # Condition on the 'interactive' flag
@@ -13,21 +14,12 @@ esac
 #	echo "~/rootfs/home/.bashrc"
 #fi
 
-alias ls='ls -CF --color=auto --show-control-chars'
-alias l='ls -l'
-alias ll='ls -al'
-alias dir='ll | less'
-alias grep='grep --color -I --exclude=*.cmd --exclude=*.dep --exclude=tags --exclude=cscope* --exclude=*.out'
 
-alias ff='ff.sh'
-alias ffs='ffs.sh'
-
-alias gr="find . -name '*.[chS]' | xargs grep -n --color=always --directories=skip --devices=skip "
-alias grn="find . -name '*.[chS]' | xargs grep -n --directories=skip --devices=skip "
-alias gra="find . -name '*' -and ! -name 'tags' -and ! -name '*.tags' -and ! -name 'tags.*' | xargs grep -n --color=always --directories=skip "
-
-
-alias pdfer=evince
+#
+# alias
+#
+TMPFILE="$HOME/rootfs/home/.bashrc_alias"
+[ -f "$TMPFILE" ] && source "$TMPFILE"
 
 #
 # CVSROOT
@@ -35,34 +27,44 @@ alias pdfer=evince
 export CVSROOT=:pserver:jinynet9@cvs.dmcit.co.kr:/home/cvs
 
 #
-# PATH ; setted by .profile
+# PATH
 #
-PATH=$PATH:$HOME/rootfs/home/bin:$HOME/rootfs/bash/scripts
+TMPFILE="$HOME/rootfs/home/.bashrc_PATH"
+[ -f "$TMPFILE" ] && source "$TMPFILE"
 
 #
+TMPFILE="$HOME/rootfs/home/.bashrc_PS1"
+[ -f "$TMPFILE" ] && source "$TMPFILE"
+
 #
+TMPFILE="$HOME/rootfs/home/.bashrc_rsync"
+[ -f "$TMPFILE" ] && source "$TMPFILE"
+
 #
-if [ "$HOSTNAME" == "jinux" ]; then
-	if [[ ! -z $INTERACTIVE ]]; then
-		:	
-	fi
+TMPFILE="$HOME/rootfs/home/.bashrc_shared"
+[ -f "$TMPFILE" ] && source "$TMPFILE"
 
-	:
-else
-	if [[ ! -z $INTERACTIVE ]]; then
-	rsync -avz --delete --exclude "*.swp" -e ssh jinynet9@172.17.1.21:/home/jinynet9/rootfs /home/jinynet9
-	fi
+#
+# If ENV_PROFILE is set, run the command once, then unset
+# ssh -X -t green 'export ENV_PROFILE=pktvault; bash -i'
+#
+[ -n "$ENV_PROFILE" ] && {
+    case "$ENV_PROFILE" in
+      pktvault)
+        pktvault
+        ;;
+      pktvault-verify)
+        pktvault-verify
+        ;;
+      *)
+        echo "unknown ENV_PROFILE: $ENV_PROFILE (in $BASH_SOURCE)"
+        ;;
+    esac
 
-	if [ -f ~/control-project/tools/prj_alias ]; then
-		. ~/control-project/tools/prj_alias
-	fi
-fi
+    unset ENV_PROFILE
+}
 
-if [ ! -z "$PRJROOT" ]; then
-	if [[ "$PRJROOT" == *"control"* ]]; then
-	    source ~/control-project/tools/prj_prompt_green
-	else
-	    source ~/control-project/tools/prj_prompt_red
-	fi
-fi
-
+#
+# unset errexit
+#
+set +e

@@ -1,0 +1,23 @@
+
+path_add() {
+    local dir="$1"
+    eval dir="$1" # '~' extention
+  
+    #  does not exist
+    [[ ! -d "$dir" ]] && return 1
+  
+    #  ! already in PATH
+    [[ ":$PATH:" != *":$dir:"* ]] && PATH="$PATH:$dir"
+}
+
+path_add "~/rootfs/home/bin"
+path_add "~/rootfs/bash/scripts"
+
+#TMPDIR="~/rootfs/home/bin"
+#[ -f "$TMPFILE" ] && PATH=$PATH:$TMPDIR
+#
+#TMPDIR="~/rootfs/home/scripts"
+#[ -f "$TMPFILE" ] && PATH=$PATH:$TMPDIR
+
+export PATH
+
